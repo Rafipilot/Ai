@@ -1,8 +1,6 @@
 import tensorflow as tf
 from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Embedding, LSTM, Dense, BatchNormalization, Dropout
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import LearningRateScheduler
+from tensorflow.keras.layers import Embedding, LSTM, Dense
 import numpy as np
 
 # Sample data related to rockets
@@ -143,8 +141,7 @@ model = Sequential()
 model.add(Embedding(total_words, 50, input_length=max_sequence_length-1))
 model.add(LSTM(100))
 model.add(Dense(total_words, activation='softmax'))
-model.add(BatchNormalization())
-model.add(Dropout(0.2))
+
 model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
 
 # Train the model
@@ -175,7 +172,6 @@ def generate_text(seed_text, next_words, model, max_sequence_length, tokenizer, 
 # Generate text using the trained model
 generated_text = generate_text("Rockets", 100, model, max_sequence_length, tokenizer, temperature=0.5)
 print(generated_text)
-
 
 
 
