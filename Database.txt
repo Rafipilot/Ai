@@ -1,10 +1,3 @@
-import tensorflow as tf
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Embedding, LSTM, Dense
-import numpy as np
-import time
-
-# Sample data related to rockets
 rocket_data = [
    "Interplanetary travel requires advanced rocket propulsion systems.",
     "Rocket scientists analyze data from telemetry to improve launch success rates.",
@@ -340,63 +333,17 @@ rocket_data = [
 ]
 
 
-# Tokenize the text data
-tokenizer = tf.keras.preprocessing.text.Tokenizer()
-tokenizer.fit_on_texts(rocket_data)
-total_words = len(tokenizer.word_index) + 1
 
-# Create input sequences and labels
-input_sequences = []
-for line in rocket_data:
-    token_list = tokenizer.texts_to_sequences([line])[0]
-    for i in range(1, len(token_list)):
-        n_gram_sequence = token_list[:i+1]
-        input_sequences.append(n_gram_sequence)
 
-max_sequence_length = max([len(x) for x in input_sequences])
-input_sequences = tf.keras.preprocessing.sequence.pad_sequences(input_sequences, maxlen=max_sequence_length, padding='pre')
-X, y = input_sequences[:, :-1], input_sequences[:, -1]
-y = tf.keras.utils.to_categorical(y, num_classes=total_words)
+IqbalLatifData = [
+  "Google Unveils Gemini: The Most Powerful AI Model YetGoogle has just unveiled Gemini, its most advanced AI model yet. This multimodal, versatile, and staggering in scope AI tool is set to revolutionize how developers and businesses utilize AI for building and scaling applications.",
+    "Key Features of GeminiMultimodal: Gemini can process and understand data from a variety of sources, including text, images, audio, video, and code. This makes it a powerful tool for tasks that require a deep understanding of context.",
+    "Versatile: Gemini can be used for a wide range of tasks, including natural language processing, computer vision, and machine learning. This makes it a versatile tool for developers and businesses.",
+    "Staggering in scope: Gemini is one of the most powerful AI models ever created. This means that it can handle complex tasks that would be difficult or impossible for other AI models.",
+    "Impact of Gemini on the AI LandscapeGemini is a significant milestone in the development of AI. It is the most powerful AI model yet created, and it has the potential to revolutionize the way we use AI. Gemini is set to challenge OpenAI and Microsoft, which are the current leaders in the AI industry.",
+    "Is Google Back in the Game?Google's release of Gemini is a sign that the company is serious about competing in the AI industry. Gemini is a powerful and versatile tool that has the potential to make a real difference. This release suggests that Google is back in the game and is not going to give up without a fight.",
+    "What Else Stood Out from the Release?In addition to its impressive features, Gemini is also notable for its collaborative development process. Teams from across Google, including Google DeepMind and Google Research, worked together to create Gemini. This collaborative approach is a testament to Google's commitment to innovation.",
+    "Overall, Gemini is a significant achievement for Google and a major milestone in the development of AI. It is a powerful and versatile tool that has the potential to revolutionize the way we use AI.",
+    "Here are some additional thoughts on the release of Gemini:Google's investment in AI is a sign of the company's belief in the technology's potential to transform the world.",
 
-# Build the model
-model = Sequential()
-model.add(Embedding(total_words, 50, input_length=max_sequence_length-1))
-model.add(LSTM(100, return_sequences=True))
-model.add(LSTM(100))
-model.add(Dense(total_words, activation='softmax'))
-
-model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
-
-# Train the model (you may want to split this into a separate function if needed)
-model.fit(X, y, epochs=500, verbose=2)
-
-# Function to generate text using the trained model
-def generate_text(seed_text, next_words, model, max_sequence_length, tokenizer, temperature=1.0):
-    for _ in range(next_words):
-        token_list = tokenizer.texts_to_sequences([seed_text])[0]
-        token_list = tf.keras.preprocessing.sequence.pad_sequences([token_list], maxlen=max_sequence_length-1, padding='pre')
-        predicted_probs = model.predict(token_list, verbose=0).flatten()
-
-        # Adjust the temperature to control randomness
-        predicted_probs = np.log(predicted_probs) / temperature
-        exp_probs = np.exp(predicted_probs)
-        predicted_probs = exp_probs / np.sum(exp_probs)
-
-        predicted_index = np.random.choice(len(predicted_probs), p=predicted_probs)
-        
-        output_word = ""
-        for word, index in tokenizer.word_index.items():
-            if index == predicted_index:
-                output_word = word
-                break
-        seed_text += " " + output_word
-    return seed_text
-
-# Infinite loop to generate text every 20 seconds
-while True:
-    NumWords= int(input("How many words to generate: "))
-    StartingWord = str(input("Starting Word: "))
-    generated_text = generate_text(StartingWord, NumWords, model, max_sequence_length, tokenizer, temperature=0.2)
-    print(generated_text)
-    print("------------------------------------------------------------------------------------------------------------------")
-    time.sleep(2)  # Sleep for 20 seconds before generating text again
+]
